@@ -244,8 +244,10 @@ def settings_screen(cfg: dict) -> dict:
         gh_token_status = G + "✔ set" + RS if cfg.get("github_token") else R + "✘ not set" + RS
         print(box_top("⚙️   Settings", color=Y))
         print(box_empty(Y))
+        repo_root_display = cfg.get("repo_root") or DW + "(auto: parent of solves dir)" + RS
         print(box_line(f"  Username    : {Y}{cfg.get('username','?')}", color=Y))
         print(box_line(f"  Solves dir  : {DW}{cfg.get('solves_dir','?')}", color=Y))
+        print(box_line(f"  Repo root   : {DW}{repo_root_display}", color=Y))
         print(box_line(f"  GitHub      : {C}{gh_user}{RS}  token: {gh_token_status}", color=Y))
         print(box_empty(Y))
         print(box_mid(Y))
@@ -253,7 +255,8 @@ def settings_screen(cfg: dict) -> dict:
         print(box_line("  [2] Change username", color=Y))
         print(box_line("  [3] Change solves folder path", color=Y))
         print(box_line("  [4] 🐙  Add / update GitHub account  (for git push)", color=Y))
-        print(box_line("  [5] Back", color=Y))
+        print(box_line("  [5] Change repo root (git folder)", color=Y))
+        print(box_line("  [6] Back", color=Y))
         print(box_empty(Y))
         print(box_bot(Y))
         print()
@@ -279,6 +282,24 @@ def settings_screen(cfg: dict) -> dict:
         elif ch == "4":
             cfg = github_account_screen(cfg)
         elif ch == "5":
+            clear()
+            print(box_top("📁  Repo Root", color=C))
+            print(box_empty(C))
+            print(box_line("  This is the folder where .git lives (your git repo root).", color=C))
+            print(box_line(f"  Current: {DW}{cfg.get('repo_root') or '(auto)'}{RS}", color=C))
+            print(box_empty(C))
+            print(box_line(f"  {DW}Example: C:\\Users\\isa20\\Documents\\Leetcode-Solves{RS}", color=C))
+            print(box_bot(C))
+            print()
+            new = input(Y + "  New repo root path (leave blank to auto): " + W).strip()
+            if new:
+                cfg["repo_root"] = new
+            else:
+                cfg.pop("repo_root", None)
+            save_config(cfg)
+            print(G + "  ✅ Saved!" + RS)
+            time.sleep(1)
+        elif ch == "6":
             break
 
     return cfg
@@ -937,8 +958,8 @@ def _print_git_result(ok: bool, msg: str):
 
 def git_screen(cfg: dict):
     solves_dir = cfg.get("solves_dir", str(SOLVES_DIR))
-    # git root = parent of solves_dir so the whole project is tracked
-    repo_root  = str(Path(solves_dir).parent)
+    # Use explicit repo_root from config if set, otherwise parent of solves_dir
+    repo_root  = cfg.get("repo_root") or str(Path(solves_dir).parent)
 
     while True:
         clear()
