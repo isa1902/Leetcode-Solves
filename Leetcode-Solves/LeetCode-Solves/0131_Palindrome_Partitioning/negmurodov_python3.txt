@@ -1,0 +1,59 @@
+======================================================================
+  LEETCODE #131 — Palindrome Partitioning
+======================================================================
+  Difficulty  : Medium
+  Category    : String
+  Tags        : String, Dynamic Programming, Backtracking
+  Acceptance  : 74.1%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+Given a string s, partition s such that every substring of the partition is a palindrome. Return all possible palindrome partitioning of s.
+
+Example 1:
+
+Input: s = "aab"
+Output: [["a","a","b"],["aa","b"]]
+Example 2:
+
+Input: s = "a"
+Output: [["a"]]
+
+Constraints:
+
+  • 1
+
+  • s contains only lowercase English letters.
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+class Solution:
+    def partition(self, s: str):
+        res = []
+        
+        def backtrack(start, path):
+            if start == len(s):
+                res.append(path[:])
+                return
+            for end in range(start + 1, len(s) + 1):
+                sub = s[start:end]
+                if sub == sub[::-1]:
+                    path.append(sub)
+                    backtrack(end, path)
+                    path.pop()
+        
+        backtrack(0, [])
+        return res
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 43 ms        beats 61.2%
+  Memory   : 33.6 MB      beats 67.5%
+  Status   : Accepted ✓
+  Date     : 2026-06-09
+  Language : Python3
+======================================================================

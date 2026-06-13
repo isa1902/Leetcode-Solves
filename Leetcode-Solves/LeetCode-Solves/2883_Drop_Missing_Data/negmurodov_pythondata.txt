@@ -1,0 +1,70 @@
+======================================================================
+  LEETCODE #2883 — Drop Missing Data
+======================================================================
+  Difficulty  : Easy
+  Category    : Other
+  Tags        : N/A
+  Acceptance  : 64.6%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+DataFrame students
++-------------+--------+
+| Column Name | Type   |
++-------------+--------+
+| student_id  | int    |
+| name        | object |
+| age         | int    |
++-------------+--------+
+
+There are some rows having missing values in the name column.
+
+Write a solution to remove the rows with missing values.
+
+The result format is in the following example.
+
+Example 1:
+
+Input:
++------------+---------+-----+
+| student_id | name    | age |
++------------+---------+-----+
+| 32         | Piper   | 5   |
+| 217        | None    | 19  |
+| 779        | Georgia | 20  |
+| 849        | Willow  | 14  |
++------------+---------+-----+
+Output:
++------------+---------+-----+
+| student_id | name    | age |
++------------+---------+-----+
+| 32         | Piper   | 5   |
+| 779        | Georgia | 20  |
+| 849        | Willow  | 14  |
++------------+---------+-----+
+Explanation:
+Student with id 217 havs empty value in the name column, so it will be removed.
+
+HINTS
+----------------------------------------------------------------------
+  Hint 1: Consider using a build-in function in pandas library to remove the rows with missing values based on specified data.
+
+======================================================================
+  MY SOLUTION  (Pandas)
+======================================================================
+
+import pandas as pd
+
+def dropMissingData(students: pd.DataFrame) -> pd.DataFrame:
+    return students.dropna(subset=['name'])
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 270 ms       beats 87.8%
+  Memory   : 67.1 MB      beats 62.8%
+  Status   : Accepted ✓
+  Date     : 2026-05-28
+  Language : Pandas
+======================================================================

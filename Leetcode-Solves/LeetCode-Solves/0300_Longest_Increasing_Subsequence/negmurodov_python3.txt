@@ -1,0 +1,62 @@
+======================================================================
+  LEETCODE #300 — Longest Increasing Subsequence
+======================================================================
+  Difficulty  : Medium
+  Category    : Array
+  Tags        : Array, Binary Search, Dynamic Programming
+  Acceptance  : 59.5%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+Given an integer array nums, return the length of the longest strictly increasing subsequence.
+
+Example 1:
+
+Input: nums = [10,9,2,5,3,7,101,18]
+Output: 4
+Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4.
+
+Example 2:
+
+Input: nums = [0,1,0,3,2,3]
+Output: 4
+
+Example 3:
+
+Input: nums = [7,7,7,7,7,7,7]
+Output: 1
+
+Constraints:
+
+  • 1
+
+  • -10^4
+
+Follow up: Can you come up with an algorithm that runs in O(n log(n)) time complexity?
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+class Solution:
+    def lengthOfLIS(self, nums: list[int]) -> int:
+        n = len(nums)
+        dp = [1] * n  # every element is an LIS of length 1 alone
+
+        for i in range(1, n):
+            for j in range(i):
+                if nums[j] < nums[i]:
+                    dp[i] = max(dp[i], dp[j] + 1)
+
+        return max(dp)
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 1290 ms      beats 24.4%
+  Memory   : 19.5 MB      beats 60.1%
+  Status   : Accepted ✓
+  Date     : 2026-06-10
+  Language : Python3
+======================================================================

@@ -1,0 +1,210 @@
+======================================================================
+  LEETCODE #3953 — Maximum Score with Co-Prime Element
+======================================================================
+  Difficulty  : Hard
+  Category    : Array
+  Tags        : Array, Hash Table, Math, Combinatorics, Enumeration, Number Theory
+  Acceptance  : 26.5%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+You are given an integer array nums of length n and an integer maxVal.
+
+You may change any element in nums to any positive integer less than or equal to maxVal. Each such change costs 1.
+
+Two integers are co-prime if their greatest common divisor (GCD) is 1.
+
+After all modifications, you must choose an index i such that, nums[i] is co-prime with every other element nums[j].
+
+Let:
+
+  • selectedValue be the final value of nums[i] after modifications.
+
+  • modificationCost be the total number of elements changed.
+
+The score is defined as score = selectedValue - modificationCost.
+
+Return the maximum possible score.
+
+Example 1:
+
+Input: nums = [3,4,6], maxVal = 5
+
+Output: 4
+
+Explanation:
+
+Change nums[2] from 6 to 5, which costs 1. Choose nums[2] = 5, since it is co-prime with 3 and 4.
+
+  • selectedValue = 5
+
+  • modificationCost = 1
+
+  • The score is 5 - 1 = 4
+
+Example 2:
+
+Input: nums = [1,2,3], maxVal = 4
+
+Output: 3
+
+Explanation:
+
+No modifications are required. Choose nums[2] = 3, since it is co-prime with 1 and 2.
+
+  • selectedValue = 3
+
+  • modificationCost = 0
+
+  • The score is 3 - 0 = 3
+
+Example 3:
+
+Input: nums = [2,2], maxVal = 1
+
+Output: 1
+
+Explanation:
+
+Change nums[0] from 2 to 1, which costs 1. Choose nums[1] = 2, since it is co-prime with 1.
+
+  • selectedValue = 2
+
+  • modificationCost = 1
+
+  • The score is ​​​​​​​2 - 1 = 1
+
+Constraints:
+
+  • 1
+
+  • 1
+
+  • 1
+
+HINTS
+----------------------------------------------------------------------
+  Hint 1: For a fixed chosen value x, every other element not co-prime with x must be changed.
+  Hint 2: Precompute how many numbers in nums are divisible by each value, then use inclusion-exclusion over the prime factors of x to count elements sharing a common factor with x.
+  Hint 3: Try all possible selected values: existing values in nums, and values up to maxVal that can be created by changing the selected element.
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+from collections import Counter
+from typing import List
+
+class Solution:
+    def maxScore(self, nums: List[int], maxVal: int) -> int:
+        n = len(nums)
+        freq = Counter(nums)
+        
+        # All values we can try as selectedValue v:
+        # - Original nums[i] values (keep index i as-is)
+        # - Any value 1..maxVal (change index i to that value)
+        # Combine: original values union {1..maxVal}
+        
+        MX = max(max(nums), maxVal)
+        
+        # SPF sieve up to MX
+        spf = list(range(MX + 1))
+        for i in range(2, int(MX**0.5) + 1):
+            if spf[i] == i:
+                for j in range(i*i, MX + 1, i):
+                    if spf[j] == j:
+                        spf[j] = i
+        
+        def prime_factors(x):
+            factors = []
+            seen = set()
+            while x > 1:
+                p = spf[x]
+                if p not in seen:
+                    factors.append(p)
+                    seen.add(p)
+                x //= p
+            return factors
+        
+        # div_cnt[d] = # elements in nums divisible by d
+        div_cnt = [0] * (MX + 1)
+        for d in range(1, MX + 1):
+            for mult in range(d, MX + 1, d):
+                div_cnt[d] += freq.get(mult, 0)
+        
+        def count_bad(v):
+            """Count elements in nums sharing a factor with v."""
+            pf = prime_factors(v)
+            bad = 0
+            m = len(pf)
+            for mask in range(1, 1 << m):
+                bits = bin(mask).count('1')
+                d = 1
+                for j in range(m):
+                    if mask >> j & 1:
+                        d *= pf[j]
+                bad += (1 if bits % 2 == 1 else -1) * div_cnt[d]
+            return bad
+        
+        best = float('-inf')
+        
+        # Case 1: selectedValue v = nums[i] (keep index i unchanged)
+        # Cost = # j≠i with gcd(nums[j], v) > 1
+        #      = bad(v) - (1 if gcd(v,v)>1 else 0)   [subtract i itself if v>1]
+        #      = bad(v) - (1 if v>1 else 0)
+        for v, cnt in freq.items():
+            bad = count_bad(v)
+            # subtract i itself: if v>1, gcd(v,v)=v>1 so i is in bad
+            cost = bad - (1 if v > 1 else 0)
+            score = v - cost
+            best = max(best, score)
+        
+        # Case 2: selectedValue v in 1..maxVal (change index i to v)
+        # Pick any index i to change (preferably one that minimizes total cost)
+        # Cost = # j≠i with gcd(nums[j], v) > 1   + 1 (for changing i)
+        # Best i to pick: one in bad(v) to reduce bad count, OR one not in bad
+        # If we pick i in bad(v): cost = (bad(v)-1) + 1 = bad(v)
+        # If we pick i not in bad(v): cost = bad(v) + 1
+        # So: cost = bad(v) if bad(v) > 0 or we can pick any i; 
+        #            if n > bad(v) we could pick outside bad: still bad(v)+1
+        #     Actually best: pick i IN bad(v) if possible → cost = bad(v)
+        #                    else pick any i → cost = bad(v) + 1 = 0 + 1 = 1
+        # But also: if nums[i] already == v, no cost for changing i! → handled in Case 1
+        # Here we explicitly change i to v (so nums[i] != v assumed, cost +=1 unless nums[i]==v)
+        # Actually Case 2 just means we SET i to v; if nums[i]==v already it's Case 1.
+        # For Case 2 with nums[i] != v:
+        #   pick i in bad(v) with nums[i]!=v: cost = bad(v)-1+1 = bad(v)
+        #   pick i not in bad(v): cost = bad(v)+1
+        
+        for v in range(1, maxVal + 1):
+            bad = count_bad(v)
+            fv = freq.get(v, 0)
+            bad_not_v = bad - fv  # elements in bad that aren't v (changing i from these saves 1 from bad, costs 1 change → net bad)
+            
+            if bad_not_v > 0:
+                # pick i from bad with nums[i]!=v
+                cost = bad  # (bad-1) others + 1 for change
+            elif bad > 0:
+                # only elements equal to v are in bad; pick i=one of them (already v, no change cost)
+                # but that's Case 1! Here we're changing i to v, so nums[i]!=v
+                # pick i not in bad: cost = bad + 1
+                cost = bad + 1
+            else:
+                # bad=0, pick any i not equal to v (n - fv > 0? maybe)
+                cost = 1  # change i to v, no others to fix
+            
+            score = v - cost
+            best = max(best, score)
+        
+        return best
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 5346 ms      beats 9.7%
+  Memory   : 41 MB        beats 49.4%
+  Status   : Accepted ✓
+  Date     : 2026-06-09
+  Language : Python3
+======================================================================

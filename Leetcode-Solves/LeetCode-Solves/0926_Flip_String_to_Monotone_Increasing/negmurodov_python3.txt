@@ -1,0 +1,73 @@
+======================================================================
+  LEETCODE #926 — Flip String to Monotone Increasing
+======================================================================
+  Difficulty  : Medium
+  Category    : String
+  Tags        : String, Dynamic Programming
+  Acceptance  : 61.9%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+A binary string is monotone increasing if it consists of some number of 0's (possibly none), followed by some number of 1's (also possibly none).
+
+You are given a binary string s. You can flip s[i] changing it from 0 to 1 or from 1 to 0.
+
+Return the minimum number of flips to make s monotone increasing.
+
+Example 1:
+
+Input: s = "00110"
+Output: 1
+Explanation: We flip the last digit to get 00111.
+
+Example 2:
+
+Input: s = "010110"
+Output: 2
+Explanation: We flip to get 011111, or alternatively 000111.
+
+Example 3:
+
+Input: s = "00011000"
+Output: 2
+Explanation: We flip to get 00000000.
+
+Constraints:
+
+  • 1
+
+  • s[i] is either '0' or '1'.
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+class Solution:
+    def minFlipsMonoIncr(self, s: str) -> int:
+        ends0 = 0  # min flips for valid prefix ending in 0
+        ends1 = 0  # min flips for valid prefix ending in 1
+
+        for ch in s:
+            if ch == '0':
+                # ends0: '0' fits → no flip needed       → ends0 stays
+                # ends1: '0' must become '1' → +1 flip   → ends1 + 1
+                #        OR transition from ends0 side    → min(ends0, ends1)
+                ends0, ends1 = ends0, min(ends0, ends1) + 1
+            else:  # ch == '1'
+                # ends0: '1' must become '0' → +1 flip
+                # ends1: '1' fits, but best is min(ends0,ends1)
+                #        (we may want to start the 1-suffix here)
+                ends0, ends1 = ends0 + 1, min(ends0, ends1)
+
+        return min(ends0, ends1)
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 55 ms        beats 62.2%
+  Memory   : 19.7 MB      beats 67.0%
+  Status   : Accepted ✓
+  Date     : 2026-06-10
+  Language : Python3
+======================================================================

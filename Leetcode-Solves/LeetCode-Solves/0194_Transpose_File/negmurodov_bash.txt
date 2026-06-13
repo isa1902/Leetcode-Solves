@@ -1,0 +1,57 @@
+======================================================================
+  LEETCODE #194 — Transpose File
+======================================================================
+  Difficulty  : Medium
+  Category    : Shell
+  Tags        : Shell
+  Acceptance  : 32.0%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+Given a text file file.txt, transpose its content.
+
+You may assume that each row has the same number of columns, and each field is separated by the ' ' character.
+
+Example:
+
+If file.txt has the following content:
+
+name age
+alice 21
+ryan 30
+
+Output the following:
+
+name alice ryan
+age 21 30
+
+======================================================================
+  MY SOLUTION  (Bash)
+======================================================================
+
+awk '
+{
+    for (i = 1; i <= NF; i++) {
+        if (NR == 1)
+            col[i] = $i
+        else
+            col[i] = col[i] " " $i
+    }
+    cols = NF
+}
+END {
+    for (i = 1; i <= cols; i++)
+        print col[i]
+}
+' file.txt
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 66 ms        beats 53.5%
+  Memory   : 4.1 MB       beats 59.6%
+  Status   : Accepted ✓
+  Date     : 2026-06-05
+  Language : Bash
+======================================================================

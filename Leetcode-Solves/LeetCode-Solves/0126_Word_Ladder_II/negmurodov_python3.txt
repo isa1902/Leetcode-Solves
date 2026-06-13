@@ -1,0 +1,111 @@
+======================================================================
+  LEETCODE #126 — Word Ladder II
+======================================================================
+  Difficulty  : Hard
+  Category    : Hash Table
+  Tags        : Hash Table, String, Backtracking, Breadth-First Search
+  Acceptance  : 27.7%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+A transformation sequence from word beginWord to word endWord using a dictionary wordList is a sequence of words beginWord -> s1 -> s2 -> ... -> sk such that:
+
+  • Every adjacent pair of words differs by a single letter.
+
+  • Every si for 1  is in wordList. Note that beginWord does not need to be in wordList.
+
+  • sk == endWord
+
+Given two words, beginWord and endWord, and a dictionary wordList, return all the shortest transformation sequences from beginWord to endWord, or an empty list if no such sequence exists. Each sequence should be returned as a list of the words [beginWord, s1, s2, ..., sk].
+
+Example 1:
+
+Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]
+Output: [["hit","hot","dot","dog","cog"],["hit","hot","lot","log","cog"]]
+Explanation: There are 2 shortest transformation sequences:
+"hit" -> "hot" -> "dot" -> "dog" -> "cog"
+"hit" -> "hot" -> "lot" -> "log" -> "cog"
+
+Example 2:
+
+Input: beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log"]
+Output: []
+Explanation: The endWord "cog" is not in wordList, therefore there is no valid transformation sequence.
+
+Constraints:
+
+  • 1
+
+  • endWord.length == beginWord.length
+
+  • 1
+
+  • wordList[i].length == beginWord.length
+
+  • beginWord, endWord, and wordList[i] consist of lowercase English letters.
+
+  • beginWord != endWord
+
+  • All the words in wordList are unique.
+
+  • The sum of all shortest transformation sequences does not exceed 10^5.
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+from collections import defaultdict, deque
+
+class Solution:
+    def findLadders(self, beginWord, endWord, wordList):
+        wordSet = set(wordList)
+        if endWord not in wordSet:
+            return []
+        
+        # BFS: строим граф слой за слоем
+        # parents[word] = set of words that lead to word in shortest path
+        parents = defaultdict(set)
+        layer = {beginWord}
+        found = False
+        
+        while layer and not found:
+            wordSet -= layer  # удаляем уже посещённые
+            next_layer = set()
+            for word in layer:
+                for i in range(len(word)):
+                    for c in 'abcdefghijklmnopqrstuvwxyz':
+                        nw = word[:i] + c + word[i+1:]
+                        if nw in wordSet:
+                            next_layer.add(nw)
+                            parents[nw].add(word)
+            if endWord in next_layer:
+                found = True
+            layer = next_layer
+        
+        if not found:
+            return []
+        
+        # Backtrack от endWord к beginWord
+        res = []
+        def backtrack(word, path):
+            if word == beginWord:
+                res.append(list(reversed(path)))
+                return
+            for parent in parents[word]:
+                path.append(parent)
+                backtrack(parent, path)
+                path.pop()
+        
+        backtrack(endWord, [endWord])
+        return res
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 27 ms        beats 64.6%
+  Memory   : 20 MB        beats 28.4%
+  Status   : Accepted ✓
+  Date     : 2026-06-09
+  Language : Python3
+======================================================================

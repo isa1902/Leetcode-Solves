@@ -1,0 +1,78 @@
+======================================================================
+  LEETCODE #1139 — Largest 1-Bordered Square
+======================================================================
+  Difficulty  : Medium
+  Category    : Array
+  Tags        : Array, Dynamic Programming, Matrix
+  Acceptance  : 52.2%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+Given a 2D grid of 0s and 1s, return the number of elements in the largest square subgrid that has all 1s on its border, or 0 if such a subgrid doesn't exist in the grid.
+
+Example 1:
+
+Input: grid = [[1,1,1],[1,0,1],[1,1,1]]
+Output: 9
+
+Example 2:
+
+Input: grid = [[1,1,0,0]]
+Output: 1
+
+Constraints:
+
+  • 1
+
+  • 1
+
+  • grid[i][j] is 0 or 1
+
+HINTS
+----------------------------------------------------------------------
+  Hint 1: For each square, know how many ones are up, left, down, and right of this square. You can find it in O(N^2) using dynamic programming.
+  Hint 2: Now for each square ( O(N^3) ), we can evaluate whether that square is 1-bordered in O(1).
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+class Solution:
+    def largest1BorderedSquare(self, grid: list[list[int]]) -> int:
+        m, n = len(grid), len(grid[0])
+
+        # left[i][j] = consecutive 1s to the left including (i,j)
+        # top[i][j]  = consecutive 1s upward including (i,j)
+        left = [[0] * n for _ in range(m)]
+        top  = [[0] * n for _ in range(m)]
+
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j]:
+                    left[i][j] = (left[i][j-1] + 1) if j > 0 else 1
+                    top[i][j]  = (top[i-1][j] + 1) if i > 0 else 1
+
+        best = 0
+
+        for i in range(m):
+            for j in range(n):
+                # (i,j) is bottom-right corner; try largest possible side
+                max_side = min(left[i][j], top[i][j])
+                for side in range(max_side, 0, -1):
+                    # check top-right and bottom-left corners
+                    if top[i][j - side + 1] >= side and left[i - side + 1][j] >= side:
+                        best = max(best, side)
+                        break   # largest valid side for this corner found
+
+        return best * best
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 122 ms       beats 63.4%
+  Memory   : 19.5 MB      beats 73.3%
+  Status   : Accepted ✓
+  Date     : 2026-06-10
+  Language : Python3
+======================================================================

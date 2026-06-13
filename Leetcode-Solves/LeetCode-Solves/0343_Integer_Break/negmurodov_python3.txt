@@ -1,0 +1,67 @@
+======================================================================
+  LEETCODE #343 — Integer Break
+======================================================================
+  Difficulty  : Medium
+  Category    : Math
+  Tags        : Math, Dynamic Programming
+  Acceptance  : 62.4%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+Given an integer n, break it into the sum of k positive integers, where k >= 2, and maximize the product of those integers.
+
+Return the maximum product you can get.
+
+Example 1:
+
+Input: n = 2
+Output: 1
+Explanation: 2 = 1 + 1, 1 &times; 1 = 1.
+
+Example 2:
+
+Input: n = 10
+Output: 36
+Explanation: 10 = 3 + 3 + 4, 3 &times; 3 &times; 4 = 36.
+
+Constraints:
+
+  • 2
+
+HINTS
+----------------------------------------------------------------------
+  Hint 1: There is a simple O(n) solution to this problem.
+  Hint 2: You may check the breaking results of n ranging from 7 to 10 to discover the regularities.
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+class Solution:
+    def integerBreak(self, n: int) -> int:
+        dp = [0] * (n + 1)
+        dp[1] = 1
+
+        for i in range(2, n + 1):
+            for j in range(1, i):
+                # j     * (i-j)      → split into exactly two pieces
+                # dp[j] * (i-j)      → further break left piece
+                # j     * dp[i-j]    → further break right piece
+                # dp[j] * dp[i-j]    → further break both pieces
+                dp[i] = max(dp[i],
+                            j * (i - j),
+                            dp[j] * (i - j),
+                            j * dp[i - j])
+
+        return dp[n]
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 3 ms         beats 33.5%
+  Memory   : 19.2 MB      beats 57.5%
+  Status   : Accepted ✓
+  Date     : 2026-06-10
+  Language : Python3
+======================================================================

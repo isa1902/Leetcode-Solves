@@ -1,0 +1,65 @@
+======================================================================
+  LEETCODE #2880 — Select Data
+======================================================================
+  Difficulty  : Easy
+  Category    : Other
+  Tags        : N/A
+  Acceptance  : 78.4%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+DataFrame students
++-------------+--------+
+| Column Name | Type   |
++-------------+--------+
+| student_id  | int    |
+| name        | object |
+| age         | int    |
++-------------+--------+
+
+Write a solution to select the name and age of the student with student_id = 101.
+
+The result format is in the following example.
+
+Example 1:
+Input:
++------------+---------+-----+
+| student_id | name    | age |
++------------+---------+-----+
+| 101        | Ulysses | 13  |
+| 53         | William | 10  |
+| 128        | Henry   | 6   |
+| 3          | Henry   | 11  |
++------------+---------+-----+
+Output:
++---------+-----+
+| name    | age |
++---------+-----+
+| Ulysses | 13  |
++---------+-----+
+Explanation:
+Student Ulysses has student_id = 101, we select the name and age.
+
+HINTS
+----------------------------------------------------------------------
+  Hint 1: Consider applying both row and column filtering to select the desired data.
+
+======================================================================
+  MY SOLUTION  (Pandas)
+======================================================================
+
+import pandas as pd
+
+def selectData(students: pd.DataFrame) -> pd.DataFrame:
+    return students.loc[students['student_id'] == 101, ['name', 'age']]
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 292 ms       beats 40.0%
+  Memory   : 66.7 MB      beats 90.5%
+  Status   : Accepted ✓
+  Date     : 2026-05-28
+  Language : Pandas
+======================================================================

@@ -1,0 +1,78 @@
+======================================================================
+  LEETCODE #473 — Matchsticks to Square
+======================================================================
+  Difficulty  : Medium
+  Category    : Array
+  Tags        : Array, Dynamic Programming, Backtracking, Bit Manipulation, Bitmask
+  Acceptance  : 41.9%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+You are given an integer array matchsticks where matchsticks[i] is the length of the i^th matchstick. You want to use all the matchsticks to make one square. You should not break any stick, but you can link them up, and each matchstick must be used exactly one time.
+
+Return true if you can make this square and false otherwise.
+
+Example 1:
+
+Input: matchsticks = [1,1,2,2,2]
+Output: true
+Explanation: You can form a square with length 2, one side of the square came two sticks with length 1.
+
+Example 2:
+
+Input: matchsticks = [3,3,3,3,4]
+Output: false
+Explanation: You cannot find a way to form a square with all the matchsticks.
+
+Constraints:
+
+  • 1
+
+  • 1
+
+HINTS
+----------------------------------------------------------------------
+  Hint 1: Treat the matchsticks as an array. Can we split the array into 4 equal parts?
+  Hint 2: Every matchstick can belong to either of the 4 sides. We don't know which one. Maybe try out all options!
+  Hint 3: For every matchstick, we have to try out each of the 4 options i.e. which side it can belong to. We can make use of recursion for this.
+  Hint 4: We don't really need to keep track of which matchsticks belong to a particular side during recursion. We just need to keep track of the length of each of the 4 sides.
+  Hint 5: When all matchsticks have been used we simply need to see the length of all 4 sides. If they're equal, we have a square on our hands!
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+class Solution:
+    def makesquare(self, matchsticks: list[int]) -> bool:
+        total = sum(matchsticks)
+        if total % 4 != 0:
+            return False
+        target = total // 4
+        matchsticks.sort(reverse=True)  # prune early with big sticks first
+        sides = [0] * 4
+
+        def bt(i):
+            if i == len(matchsticks):
+                return all(s == target for s in sides)
+            seen = set()
+            for j in range(4):
+                if sides[j] + matchsticks[i] <= target and sides[j] not in seen:
+                    seen.add(sides[j])
+                    sides[j] += matchsticks[i]
+                    if bt(i + 1):
+                        return True
+                    sides[j] -= matchsticks[i]
+            return False
+
+        return bt(0)
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 87 ms        beats 92.9%
+  Memory   : 19.3 MB      beats 57.3%
+  Status   : Accepted ✓
+  Date     : 2026-06-13
+  Language : Python3
+======================================================================

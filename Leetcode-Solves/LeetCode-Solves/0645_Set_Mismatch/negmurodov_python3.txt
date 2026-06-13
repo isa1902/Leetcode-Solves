@@ -1,0 +1,62 @@
+======================================================================
+  LEETCODE #645 — Set Mismatch
+======================================================================
+  Difficulty  : Easy
+  Category    : Array
+  Tags        : Array, Hash Table, Bit Manipulation, Sorting
+  Acceptance  : 43.5%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+You have a set of integers s, which originally contains all the numbers from 1 to n. Unfortunately, due to some error, one of the numbers in s got duplicated to another number in the set, which results in repetition of one number and loss of another number.
+
+You are given an integer array nums representing the data status of this set after the error.
+
+Find the number that occurs twice and the number that is missing and return them in the form of an array.
+
+Example 1:
+
+Input: nums = [1,2,2,4]
+Output: [2,3]
+Example 2:
+
+Input: nums = [1,1]
+Output: [1,2]
+
+Constraints:
+
+  • 2
+
+  • 1
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+class Solution:
+    def findErrorNums(self, nums: List[int]) -> List[int]:
+        count = {}
+        n = len(nums)
+        
+        for num in nums:
+            count[num] = count.get(num, 0) + 1
+        
+        duplicate = missing = 0
+        for i in range(1, n + 1):
+            if count.get(i, 0) == 2:
+                duplicate = i
+            elif count.get(i, 0) == 0:
+                missing = i
+        
+        return [duplicate, missing]
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 23 ms        beats 29.8%
+  Memory   : 20.6 MB      beats 66.0%
+  Status   : Accepted ✓
+  Date     : 2026-06-05
+  Language : Python3
+======================================================================

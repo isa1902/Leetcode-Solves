@@ -1,0 +1,83 @@
+======================================================================
+  LEETCODE #241 — Different Ways to Add Parentheses
+======================================================================
+  Difficulty  : Medium
+  Category    : Math
+  Tags        : Math, String, Dynamic Programming, Recursion, Memoization
+  Acceptance  : 73.3%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+Given a string expression of numbers and operators, return all possible results from computing all the different possible ways to group numbers and operators. You may return the answer in any order.
+
+The test cases are generated such that the output values fit in a 32-bit integer and the number of different results does not exceed 10^4.
+
+Example 1:
+
+Input: expression = "2-1-1"
+Output: [0,2]
+Explanation:
+((2-1)-1) = 0
+(2-(1-1)) = 2
+
+Example 2:
+
+Input: expression = "2*3-4*5"
+Output: [-34,-14,-10,-10,10]
+Explanation:
+(2*(3-(4*5))) = -34
+((2*3)-(4*5)) = -14
+((2*(3-4))*5) = -10
+(2*((3-4)*5)) = -10
+(((2*3)-4)*5) = 10
+
+Constraints:
+
+  • 1
+
+  • expression consists of digits and the operator '+', '-', and '*'.
+
+  • All the integer values in the input expression are in the range [0, 99].
+
+  • The integer values in the input expression do not have a leading '-' or '+' denoting the sign.
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+class Solution:
+    def diffWaysToCompute(self, expression: str) -> list[int]:
+        memo = {}
+
+        def solve(expr):
+            if expr in memo:
+                return memo[expr]
+            if expr.isdigit() or (len(expr) <= 2 and expr.lstrip('-').isdigit()):
+                return [int(expr)]
+
+            results = []
+            for i, ch in enumerate(expr):
+                if ch in '+-*':
+                    left  = solve(expr[:i])
+                    right = solve(expr[i+1:])
+                    for l in left:
+                        for r in right:
+                            if ch == '+': results.append(l + r)
+                            elif ch == '-': results.append(l - r)
+                            else:          results.append(l * r)
+
+            memo[expr] = results
+            return results
+
+        return solve(expression)
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 4 ms         beats 14.6%
+  Memory   : 19.4 MB      beats 30.1%
+  Status   : Accepted ✓
+  Date     : 2026-06-13
+  Language : Python3
+======================================================================

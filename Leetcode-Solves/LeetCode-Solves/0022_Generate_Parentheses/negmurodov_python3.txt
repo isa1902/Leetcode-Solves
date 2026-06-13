@@ -1,0 +1,55 @@
+======================================================================
+  LEETCODE #22 — Generate Parentheses
+======================================================================
+  Difficulty  : Medium
+  Category    : String
+  Tags        : String, Dynamic Programming, Backtracking
+  Acceptance  : 78.7%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+Example 1:
+
+Input: n = 3
+Output: ["((()))","(()())","(())()","()(())","()()()"]
+Example 2:
+
+Input: n = 1
+Output: ["()"]
+
+Constraints:
+
+  • 1
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+class Solution:
+    def generateParenthesis(self, n: int) -> list[str]:
+        res = []
+        
+        def backtrack(s, open, close):
+            if len(s) == 2 * n:
+                res.append(s)
+                return
+            if open < n:
+                backtrack(s + '(', open + 1, close)
+            if close < open:
+                backtrack(s + ')', open, close + 1)
+        
+        backtrack('', 0, 0)
+        return res
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 0 ms         beats 100.0%
+  Memory   : 19.5 MB      beats 36.0%
+  Status   : Accepted ✓
+  Date     : 2026-06-09
+  Language : Python3
+======================================================================

@@ -1,0 +1,81 @@
+======================================================================
+  LEETCODE #176 — Second Highest Salary
+======================================================================
+  Difficulty  : Medium
+  Category    : Database
+  Tags        : Database
+  Acceptance  : 47.2%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+Table: Employee
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| salary      | int  |
++-------------+------+
+id is the primary key (column with unique values) for this table.
+Each row of this table contains information about the salary of an employee.
+
+Write a solution to find the second highest distinct salary from the Employee table. If there is no second highest salary, return null (return None in Pandas).
+
+The result format is in the following example.
+
+Example 1:
+
+Input:
+Employee table:
++----+--------+
+| id | salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+Output:
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| 200                 |
++---------------------+
+
+Example 2:
+
+Input:
+Employee table:
++----+--------+
+| id | salary |
++----+--------+
+| 1  | 100    |
++----+--------+
+Output:
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| null                |
++---------------------+
+
+======================================================================
+  MY SOLUTION  (Pandas)
+======================================================================
+
+import pandas as pd
+import numpy as np
+
+def second_highest_salary(employee: pd.DataFrame) -> pd.DataFrame:
+    unique = employee['salary'].drop_duplicates().nlargest(2)
+    result = unique.iloc[1] if len(unique) >= 2 else np.nan
+    return pd.DataFrame({'SecondHighestSalary': [result]})
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 286 ms       beats 15.5%
+  Memory   : 67.1 MB      beats 78.4%
+  Status   : Accepted ✓
+  Date     : 2026-05-28
+  Language : Pandas
+======================================================================

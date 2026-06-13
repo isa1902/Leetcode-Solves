@@ -1,0 +1,90 @@
+======================================================================
+  LEETCODE #4 — Median of Two Sorted Arrays
+======================================================================
+  Difficulty  : Hard
+  Category    : Array
+  Tags        : Array, Binary Search, Divide and Conquer
+  Acceptance  : 46.7%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays.
+
+The overall run time complexity should be O(log (m+n)).
+
+Example 1:
+
+Input: nums1 = [1,3], nums2 = [2]
+Output: 2.00000
+Explanation: merged array = [1,2,3] and median is 2.
+
+Example 2:
+
+Input: nums1 = [1,2], nums2 = [3,4]
+Output: 2.50000
+Explanation: merged array = [1,2,3,4] and median is (2 + 3) / 2 = 2.5.
+
+Constraints:
+
+  • nums1.length == m
+
+  • nums2.length == n
+
+  • 0
+
+  • 0
+
+  • 1
+
+  • -10^6
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+from typing import List
+
+class Solution:
+    def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
+        # Ensure nums1 is the smaller array
+        if len(nums1) > len(nums2):
+            nums1, nums2 = nums2, nums1
+        
+        m, n = len(nums1), len(nums2)
+        half = (m + n + 1) // 2  # elements on the left side
+        
+        lo, hi = 0, m
+        
+        while lo <= hi:
+            i = (lo + hi) // 2   # partition index in nums1
+            j = half - i         # partition index in nums2
+            
+            # Edge sentinels
+            left1  = nums1[i - 1] if i > 0 else float('-inf')
+            right1 = nums1[i]     if i < m else float('inf')
+            left2  = nums2[j - 1] if j > 0 else float('-inf')
+            right2 = nums2[j]     if j < n else float('inf')
+            
+            if left1 <= right2 and left2 <= right1:
+                # Perfect partition found
+                if (m + n) % 2 == 1:
+                    return float(max(left1, left2))
+                else:
+                    return (max(left1, left2) + min(right1, right2)) / 2.0
+            elif left1 > right2:
+                hi = i - 1   # too many from nums1, move left
+            else:
+                lo = i + 1   # too few from nums1, move right
+        
+        return -1.0  # unreachable
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 0 ms         beats 100.0%
+  Memory   : 19.7 MB      beats 15.4%
+  Status   : Accepted ✓
+  Date     : 2026-06-09
+  Language : Python3
+======================================================================

@@ -1,0 +1,119 @@
+======================================================================
+  LEETCODE #3451 — Find Invalid IP Addresses
+======================================================================
+  Difficulty  : Hard
+  Category    : Database
+  Tags        : Database
+  Acceptance  : 52.4%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+Table:  logs
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| log_id      | int     |
+| ip          | varchar |
+| status_code | int     |
++-------------+---------+
+log_id is the unique key for this table.
+Each row contains server access log information including IP address and HTTP status code.
+
+Write a solution to find invalid IP addresses. An IPv4 address is invalid if it meets any of these conditions:
+
+  • Contains numbers greater than 255 in any octet
+
+  • Has leading zeros in any octet (like 01.02.03.04)
+
+  • Has less or more than 4 octets
+
+Return the result table ordered by invalid_count, ip in descending order respectively.
+
+The result format is in the following example.
+
+Example:
+
+Input:
+
+logs table:
+
++--------+---------------+-------------+
+| log_id | ip            | status_code |
++--------+---------------+-------------+
+| 1      | 192.168.1.1   | 200         |
+| 2      | 256.1.2.3     | 404         |
+| 3      | 192.168.001.1 | 200         |
+| 4      | 192.168.1.1   | 200         |
+| 5      | 192.168.1     | 500         |
+| 6      | 256.1.2.3     | 404         |
+| 7      | 192.168.001.1 | 200         |
++--------+---------------+-------------+
+
+Output:
+
++---------------+--------------+
+| ip            | invalid_count|
++---------------+--------------+
+| 256.1.2.3     | 2            |
+| 192.168.001.1 | 2            |
+| 192.168.1     | 1            |
++---------------+--------------+
+
+Explanation:
+
+  • 256.1.2.3 is invalid because 256 > 255
+
+  • 192.168.001.1 is invalid because of leading zeros
+
+  • 192.168.1 is invalid because it has only 3 octets
+
+The output table is ordered by invalid_count, ip in descending order respectively.
+
+======================================================================
+  MY SOLUTION  (MySQL)
+======================================================================
+
+WITH octets AS (
+    SELECT
+        ip,
+        SUBSTRING_INDEX(ip, '.', 1)                                    AS o1,
+        SUBSTRING_INDEX(SUBSTRING_INDEX(ip, '.', 2), '.', -1)          AS o2,
+        SUBSTRING_INDEX(SUBSTRING_INDEX(ip, '.', 3), '.', -1)          AS o3,
+        SUBSTRING_INDEX(ip, '.', -1)                                   AS o4,
+        LENGTH(ip) - LENGTH(REPLACE(ip, '.', ''))                      AS dot_count
+    FROM logs
+)
+SELECT ip, COUNT(*) AS invalid_count
+FROM logs
+WHERE ip IN (
+    SELECT ip FROM octets
+    WHERE
+        -- Rule 1: must have exactly 3 dots (4 octets)
+        dot_count != 3
+        OR
+        -- Rule 2: leading zeros (length > 1 and starts with '0')
+        (LENGTH(o1) > 1 AND o1 LIKE '0%') OR
+        (LENGTH(o2) > 1 AND o2 LIKE '0%') OR
+        (LENGTH(o3) > 1 AND o3 LIKE '0%') OR
+        (LENGTH(o4) > 1 AND o4 LIKE '0%')
+        OR
+        -- Rule 3: any octet value > 255
+        CAST(o1 AS UNSIGNED) > 255 OR
+        CAST(o2 AS UNSIGNED) > 255 OR
+        CAST(o3 AS UNSIGNED) > 255 OR
+        CAST(o4 AS UNSIGNED) > 255
+)
+GROUP BY ip
+ORDER BY invalid_count DESC, ip DESC;
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 297 ms       beats 91.4%
+  Memory   : 0B           beats 100.0%
+  Status   : Accepted ✓
+  Date     : 2026-06-02
+  Language : MySQL
+======================================================================

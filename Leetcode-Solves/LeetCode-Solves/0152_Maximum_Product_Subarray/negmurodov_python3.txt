@@ -1,0 +1,60 @@
+======================================================================
+  LEETCODE #152 — Maximum Product Subarray
+======================================================================
+  Difficulty  : Medium
+  Category    : Array
+  Tags        : Array, Dynamic Programming
+  Acceptance  : 36.5%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+Given an integer array nums, find a subarray that has the largest product, and return the product.
+
+The test cases are generated so that the answer will fit in a 32-bit integer.
+
+Note that the product of an array with a single element is the value of that element.
+
+Example 1:
+
+Input: nums = [2,3,-2,4]
+Output: 6
+Explanation: [2,3] has the largest product 6.
+
+Example 2:
+
+Input: nums = [-2,0,-1]
+Output: 0
+Explanation: The result cannot be 2, because [-2,-1] is not a subarray.
+
+Constraints:
+
+  • 1
+
+  • -10
+
+  • The product of any subarray of nums is guaranteed to fit in a 32-bit integer.
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+class Solution:
+    def maxProduct(self, nums) -> int:
+        mn = mx = res = nums[0]
+        
+        for n in nums[1:]:
+            mn, mx = min(n, mn*n, mx*n), max(n, mn*n, mx*n)
+            res = max(res, mx)
+        
+        return res
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 3 ms         beats 90.9%
+  Memory   : 19.9 MB      beats 21.1%
+  Status   : Accepted ✓
+  Date     : 2026-06-09
+  Language : Python3
+======================================================================

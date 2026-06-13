@@ -1,0 +1,55 @@
+======================================================================
+  LEETCODE #392 — Is Subsequence
+======================================================================
+  Difficulty  : Easy
+  Category    : Two Pointers
+  Tags        : Two Pointers, String, Dynamic Programming
+  Acceptance  : 49.1%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+Given two strings s and t, return true if s is a subsequence of t, or false otherwise.
+
+A subsequence of a string is a new string that is formed from the original string by deleting some (can be none) of the characters without disturbing the relative positions of the remaining characters. (i.e., "ace" is a subsequence of "abcde" while "aec" is not).
+
+Example 1:
+
+Input: s = "abc", t = "ahbgdc"
+Output: true
+Example 2:
+
+Input: s = "axc", t = "ahbgdc"
+Output: false
+
+Constraints:
+
+  • 0
+
+  • 0
+
+  • s and t consist only of lowercase English letters.
+
+Follow up: Suppose there are lots of incoming s, say s1, s2, ..., sk where k >= 10^9, and you want to check one by one to see if t has its subsequence. In this scenario, how would you change your code?
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+class Solution:
+    def isSubsequence(self, s: str, t: str) -> bool:
+        i = 0
+        for c in t:
+            if i < len(s) and c == s[i]:
+                i += 1
+        return i == len(s)
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 3 ms         beats 24.9%
+  Memory   : 19.1 MB      beats 91.7%
+  Status   : Accepted ✓
+  Date     : 2026-06-13
+  Language : Python3
+======================================================================

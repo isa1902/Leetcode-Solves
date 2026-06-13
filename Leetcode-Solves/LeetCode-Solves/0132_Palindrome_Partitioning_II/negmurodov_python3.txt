@@ -1,0 +1,69 @@
+======================================================================
+  LEETCODE #132 — Palindrome Partitioning II
+======================================================================
+  Difficulty  : Hard
+  Category    : String
+  Tags        : String, Dynamic Programming
+  Acceptance  : 37.2%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+Given a string s, partition s such that every substring of the partition is a palindrome.
+
+Return the minimum cuts needed for a palindrome partitioning of s.
+
+Example 1:
+
+Input: s = "aab"
+Output: 1
+Explanation: The palindrome partitioning ["aa","b"] could be produced using 1 cut.
+
+Example 2:
+
+Input: s = "a"
+Output: 0
+
+Example 3:
+
+Input: s = "ab"
+Output: 1
+
+Constraints:
+
+  • 1
+
+  • s consists of lowercase English letters only.
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+class Solution:
+    def minCut(self, s: str) -> int:
+        n = len(s)
+        # is_pal[i][j] = True если s[i..j] палиндром
+        is_pal = [[False] * n for _ in range(n)]
+        for i in range(n - 1, -1, -1):
+            for j in range(i, n):
+                if s[i] == s[j] and (j - i <= 2 or is_pal[i+1][j-1]):
+                    is_pal[i][j] = True
+        
+        # dp[i] = мин cuts для s[0..i]
+        dp = list(range(-1, n))  # dp[i+1] для s[0..i]
+        for i in range(n):
+            for j in range(i + 1):
+                if is_pal[j][i]:
+                    dp[i+1] = min(dp[i+1], dp[j] + 1)
+        
+        return dp[n]
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 643 ms       beats 39.2%
+  Memory   : 50.8 MB      beats 25.7%
+  Status   : Accepted ✓
+  Date     : 2026-06-09
+  Language : Python3
+======================================================================

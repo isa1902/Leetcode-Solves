@@ -1,0 +1,97 @@
+======================================================================
+  LEETCODE #76 — Minimum Window Substring
+======================================================================
+  Difficulty  : Hard
+  Category    : Hash Table
+  Tags        : Hash Table, String, Sliding Window
+  Acceptance  : 47.7%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+Given two strings s and t of lengths m and n respectively, return the minimum window substring of s such that every character in t (including duplicates) is included in the window. If there is no such substring, return the empty string "".
+
+The testcases will be generated such that the answer is unique.
+
+Example 1:
+
+Input: s = "ADOBECODEBANC", t = "ABC"
+Output: "BANC"
+Explanation: The minimum window substring "BANC" includes 'A', 'B', and 'C' from string t.
+
+Example 2:
+
+Input: s = "a", t = "a"
+Output: "a"
+Explanation: The entire string s is the minimum window.
+
+Example 3:
+
+Input: s = "a", t = "aa"
+Output: ""
+Explanation: Both 'a's from t must be included in the window.
+Since the largest window of s only has one 'a', return empty string.
+
+Constraints:
+
+  • m == s.length
+
+  • n == t.length
+
+  • 1
+
+  • s and t consist of uppercase and lowercase English letters.
+
+Follow up: Could you find an algorithm that runs in O(m + n) time?
+
+HINTS
+----------------------------------------------------------------------
+  Hint 1: Use two pointers to create a window of letters in s, which would have all the characters from t.
+  Hint 2: Expand the right pointer until all the characters of t are covered.
+  Hint 3: Once all the characters are covered, move the left pointer and ensure that all the characters are still covered to minimize the subarray size.
+  Hint 4: Continue expanding the right and left pointers until you reach the end of s.
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+from collections import Counter
+
+class Solution:
+    def minWindow(self, s: str, t: str) -> str:
+        need = Counter(t)
+        have = {}
+        formed = 0          # # of chars in t whose count is satisfied
+        required = len(need)  # # of unique chars we need to satisfy
+
+        left = 0
+        best = (float('inf'), 0, 0)  # (length, left, right)
+
+        for right, c in enumerate(s):
+            have[c] = have.get(c, 0) + 1
+            if c in need and have[c] == need[c]:
+                formed += 1
+
+            # Shrink from left while window is valid
+            while formed == required:
+                # Record if best
+                if right - left + 1 < best[0]:
+                    best = (right - left + 1, left, right)
+
+                lc = s[left]
+                have[lc] -= 1
+                if lc in need and have[lc] < need[lc]:
+                    formed -= 1
+                left += 1
+
+        return "" if best[0] == float('inf') else s[best[1]: best[2] + 1]
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 64 ms        beats 69.3%
+  Memory   : 19.6 MB      beats 94.3%
+  Status   : Accepted ✓
+  Date     : 2026-06-09
+  Language : Python3
+======================================================================

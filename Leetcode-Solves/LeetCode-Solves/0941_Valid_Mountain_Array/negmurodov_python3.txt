@@ -1,0 +1,74 @@
+======================================================================
+  LEETCODE #941 — Valid Mountain Array
+======================================================================
+  Difficulty  : Easy
+  Category    : Array
+  Tags        : Array
+  Acceptance  : 35.3%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+Given an array of integers arr, return true if and only if it is a valid mountain array.
+
+Recall that arr is a mountain array if and only if:
+
+  • arr.length >= 3
+
+  • There exists some i with 0  such that:
+
+  • arr[0]
+
+  • arr[i] > arr[i + 1] > ... > arr[arr.length - 1]
+
+Example 1:
+
+Input: arr = [2,1]
+Output: false
+Example 2:
+
+Input: arr = [3,5,5]
+Output: false
+Example 3:
+
+Input: arr = [0,3,2,1]
+Output: true
+
+Constraints:
+
+  • 1
+
+  • 0
+
+HINTS
+----------------------------------------------------------------------
+  Hint 1: It's very easy to keep track of a monotonically increasing or decreasing ordering of elements. You just need to be able to determine the start of the valley in the mountain and from that point onwards, it should be a valley i.e. no mini-hills after that. Use this information in regards to the values in the array and you will be able to come up with a straightforward solution.
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+class Solution:
+    def validMountainArray(self, arr: List[int]) -> bool:
+        n = len(arr)
+        if n < 3:
+            return False
+
+        left, right = 0, n - 1
+
+        while left + 1 < n and arr[left] < arr[left + 1]:
+            left += 1
+        while right - 1 >= 0 and arr[right] < arr[right - 1]:
+            right -= 1
+
+        return left == right and left != 0 and right != n - 1
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 167 ms       beats 18.5%
+  Memory   : 20.6 MB      beats 43.7%
+  Status   : Accepted ✓
+  Date     : 2026-06-05
+  Language : Python3
+======================================================================

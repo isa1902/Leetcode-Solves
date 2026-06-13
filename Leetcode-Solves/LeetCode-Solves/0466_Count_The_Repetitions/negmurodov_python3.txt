@@ -1,0 +1,109 @@
+======================================================================
+  LEETCODE #466 — Count The Repetitions
+======================================================================
+  Difficulty  : Hard
+  Category    : Two Pointers
+  Tags        : Two Pointers, String, Dynamic Programming
+  Acceptance  : 34.4%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+We define str = [s, n] as the string str which consists of the string s concatenated n times.
+
+  • For example, str == ["abc", 3] =="abcabcabc".
+
+We define that string s1 can be obtained from string s2 if we can remove some characters from s2 such that it becomes s1.
+
+  • For example, s1 = "abc" can be obtained from s2 = "abdbec" based on our definition by removing the bolded underlined characters.
+
+You are given two strings s1 and s2 and two integers n1 and n2. You have the two strings str1 = [s1, n1] and str2 = [s2, n2].
+
+Return the maximum integer m such that str = [str2, m] can be obtained from str1.
+
+Example 1:
+
+Input: s1 = "acb", n1 = 4, s2 = "ab", n2 = 2
+Output: 2
+Example 2:
+
+Input: s1 = "acb", n1 = 1, s2 = "acb", n2 = 1
+Output: 1
+
+Constraints:
+
+  • 1
+
+  • s1 and s2 consist of lowercase English letters.
+
+  • 1
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+class Solution:
+    def getMaxRepetitions(self, s1: str, n1: int, s2: str, n2: int) -> int:
+        l1, l2 = len(s1), len(s2)
+        
+        # seen[s2_pos] = (i, s2_count) at start of i-th s1 copy
+        seen = {}
+        s2_pos = 0    # current position in s2
+        s2_count = 0  # how many full s2 we've matched
+        
+        for i in range(n1):
+            # process one copy of s1
+            for c in s1:
+                if c == s2[s2_pos]:
+                    s2_pos += 1
+                    if s2_pos == l2:
+                        s2_pos = 0
+                        s2_count += 1
+            
+            if s2_pos in seen:
+                prev_i, prev_count = seen[s2_pos]
+                # cycle found: from prev_i to i is one cycle
+                cycle_len = i - prev_i          # copies of s1 per cycle
+                cycle_s2  = s2_count - prev_count  # s2 matches per cycle
+                
+                remaining = n1 - 1 - i          # s1 copies left after cycle start
+                total = prev_count + (remaining // cycle_len) * cycle_s2
+                total += (s2_count - prev_count) * (remaining % cycle_len == 0 and 0 or 0)
+                
+                # s2 matches from remaining copies after full cycles
+                leftover = remaining % cycle_len
+                # simulate leftover more copies of s1 from prev state
+                pos = s2_pos  # same as prev_i's pos
+                for _ in range(leftover):
+                    for c in s1:
+                        if c == pos and False: pass  # placeholder
+                
+                # cleaner: just compute directly
+                total = prev_count
+                full_cycles = (n1 - prev_i - 1) // cycle_len
+                total += full_cycles * cycle_s2
+                rem = (n1 - prev_i - 1) % cycle_len
+                # simulate rem more s1 copies from prev state
+                p = s2_pos  # position at prev_i
+                for _ in range(rem):
+                    for c in s1:
+                        if c == s2[p]:
+                            p += 1
+                            if p == l2:
+                                p = 0
+                                total += 1
+                return total // n2
+            
+            seen[s2_pos] = (i, s2_count)
+        
+        return s2_count // n2
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 2 ms         beats 62.0%
+  Memory   : 19.5 MB      beats 17.6%
+  Status   : Accepted ✓
+  Date     : 2026-06-13
+  Language : Python3
+======================================================================

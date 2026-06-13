@@ -1,0 +1,67 @@
+======================================================================
+  LEETCODE #312 — Burst Balloons
+======================================================================
+  Difficulty  : Hard
+  Category    : Array
+  Tags        : Array, Dynamic Programming
+  Acceptance  : 63.6%
+======================================================================
+
+PROBLEM STATEMENT
+----------------------------------------------------------------------
+You are given n balloons, indexed from 0 to n - 1. Each balloon is painted with a number on it represented by an array nums. You are asked to burst all the balloons.
+
+If you burst the i^th balloon, you will get nums[i - 1] * nums[i] * nums[i + 1] coins. If i - 1 or i + 1 goes out of bounds of the array, then treat it as if there is a balloon with a 1 painted on it.
+
+Return the maximum coins you can collect by bursting the balloons wisely.
+
+Example 1:
+
+Input: nums = [3,1,5,8]
+Output: 167
+Explanation:
+nums = [3,1,5,8] --> [3,5,8] --> [3,8] --> [8] --> []
+coins =  3*1*5    +   3*5*8   +  1*3*8  + 1*8*1 = 167
+
+Example 2:
+
+Input: nums = [1,5]
+Output: 10
+
+Constraints:
+
+  • n == nums.length
+
+  • 1
+
+  • 0
+
+======================================================================
+  MY SOLUTION  (Python3)
+======================================================================
+
+class Solution:
+    def maxCoins(self, nums: list[int]) -> int:
+        nums = [1] + nums + [1]  # sentinel boundaries
+        n = len(nums)
+        dp = [[0] * n for _ in range(n)]
+
+        # dp[l][r] = max coins from bursting all balloons strictly between l and r
+        for length in range(2, n):          # window size (at least 1 balloon inside)
+            for l in range(0, n - length):
+                r = l + length
+                for k in range(l + 1, r):   # k = last balloon burst in (l, r)
+                    coins = nums[l] * nums[k] * nums[r]
+                    dp[l][r] = max(dp[l][r], dp[l][k] + coins + dp[k][r])
+
+        return dp[0][n-1]
+
+======================================================================
+  SUBMISSION STATS
+----------------------------------------------------------------------
+  Runtime  : 2139 ms      beats 67.3%
+  Memory   : 22.2 MB      beats 65.7%
+  Status   : Accepted ✓
+  Date     : 2026-06-13
+  Language : Python3
+======================================================================
