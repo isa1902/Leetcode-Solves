@@ -1,7 +1,7 @@
 # 🧠 Leetcode-Solves
 
-![Problems Solved](https://leetcode-badge-sage.vercel.app/badge/negmurodov?style=flat-square&label=Solved)
-![Languages](https://img.shields.io/badge/Languages-Python%20%7C%20SQL%20%7C%20Bash-blue?style=flat-square)
+![Problems Solved](https://img.shields.io/badge/Solved-234%2B-brightgreen?style=flat-square)
+![Languages](https://img.shields.io/badge/Languages-Python%20%7C%20C%2B%2B%20%7C%20Java%20%7C%20JS%20%7C%20SQL%20%7C%20Bash%20%7C%20Go%20%7C%20Rust-blue?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
 ![Open Source](https://img.shields.io/badge/Open%20Source-%E2%9D%A4-red?style=flat-square)
 ![Author](https://img.shields.io/badge/Author-isa1902-purple?style=flat-square)
